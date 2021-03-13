@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <style>
+        table {
+            margin: auto;
+        }
+
+        textarea {
+            height: 400px;
+            text-align: right;
+            direction: rtl;
+            background: yellow;
+            font-size: 18px;
+        }
+
+        td {
+            border: 1px solid black;
+            direction: rtl;
+            width: 130px;
+            height: 130px;
+            text-align: center;
+            font-family: "Segoe UI",Arial,sans-serif;
+            font-weight: bolder;
+            font-size: 25px;
+        }
+
+        fieldset {
+            float: left;
+        }
+
+            fieldset#words {
+                float: right;
+                width: 100px;
+                margin: auto;
+            }
+
+        button {
+            width: 200px;
+            margin-left: 50%;
+        }
+    </style>
+</head>
+<body>
+    <button style="background: yellow;" onclick="do_job();">ערבב והעתק</button>
+    <button onclick="selectElementContents(document.getElementById('table'));">בחר טבלה</button>
+    <button onclick="copytable('table')">העתק טבלה</button>
+
+    <hr />
+    <fieldset style="margin: auto; float: unset; width: 800px;">
+        <fieldset>
+            <table id="table">
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </fieldset>
+        <p>
+            <fieldset id="words">
+                <legend>
+                    אוצר מילים:
+                </legend>
+                <br />
+                מפריד בין משפטים:
+                <input type="text" id="sep" value="," />
+                <br />
+                <textarea id="txtarea">a,
+b,
+c,
+d,
+e,
+f,
+g,
+h,
+i,
+j,
+k,
+l,
+m,
+n,
+o,
+p,
+q,
+r,
+s,
+v,
+u,
+w,
+x,
+y,
+z,
+</textarea>
+            </fieldset>
+
+    </fieldset>
+    <script>
+        /** The function that will create a bingo card */
+        function bingo(bng) {
+            var sep = document.getElementById('sep').value; // seperator between words
+            var arr = bng.split(bng.indexOf(sep) >= 0 ? sep : ',');
+            var container = ''; // container of already selected words
+            for (var i = 1; i <= 3; i++) {
+                for (var j = 1; j <= 3; j++) {
+                    var word = '';
+                    // don't repeat words in the table
+                    while (container.indexOf(word) >= 0) {
+                        // random word
+                        word = arr[Math.floor(Math.random() * arr.length)];
+                    }
+                    container += word;
+                    // put the chosen word in a cell
+                    document.querySelector('#table tr:nth-child(' + i + ') > td:nth-child(' + j + ')').innerText = word;
+                }
+            }
+        }
+
+        function selectElementContents(el) {
+            var body = document.body, range, sel;
+            if (document.createRange && window.getSelection) {
+                range = document.createRange();
+                sel = window.getSelection();
+                sel.removeAllRanges();
+                try {
+                    range.selectNodeContents(el);
+                    sel.addRange(range);
+                } catch (e) {
+                    range.selectNode(el);
+                    sel.addRange(range);
+                }
+            } else if (body.createTextRange) {
+                range = body.createTextRange();
+                range.moveToElementText(el);
+                range.select();
+            }
+        }
+
+
+        function copytable(table_id) {
+            //creates new range object and set the table as its selection node
+            var urlField = document.getElementById(table_id);
+            var range = document.createRange();
+            range.selectNode(urlField);
+            window.getSelection().addRange(range);
+            //copy the table
+            document.execCommand('copy');
+            //remove selection
+            window.getSelection().removeAllRanges();
+        }
+
+        var words = 'a,' +
+                    'b,' +
+                    'c,' +
+                    'd,' +
+                    'e,' +
+                    'f,' +
+                    'g,' +
+                    'h,' +
+                    'i,' +
+                    'j,' +
+                    'k,' +
+                    'l,' +
+                    'm,' +
+                    'n,' +
+                    'o,' +
+                    'p,' +
+                    'q,' +
+                    'r,' +
+                    's,' +
+                    'v,' +
+                    'u,' +
+                    'w,' +
+                    'x,' +
+                    'y,' +
+                    'z,';
+
+        function do_job() {
+            bingo(document.getElementById('txtarea').value.trim().length > 0 ? document.getElementById('txtarea').value.trim() : words);
+            //selectElementContents(document.getElementById('table'));
+            copytable('table');
+        }
+
+        bingo(document.getElementById('txtarea').value.trim().length > 0?document.getElementById('txtarea').value.trim():words);
+
+    </script>
+</body>
+</html>
